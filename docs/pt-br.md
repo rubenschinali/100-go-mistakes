@@ -204,11 +204,11 @@ Usar a incorporação de tipos conscientemente, mantendo essas restrições em m
 
 ???+ info "TL;DR"
 
-    Para lidar com opções de maneira conveniente e amigável à API, use o padrão de opções funcionais.
+    Para lidar com opções de maneira conveniente e amigável para a API, use o padrão de opções funcionais.
 
 Embora existam diferentes implementações com pequenas variações, a ideia principal é a seguinte:
 
-* Uma estrutura não exportada contém a configuração: opções.
+* Um struct não exportado armazena a configuração: opções.
 * Cada opção é uma função que retorna o mesmo tipo: `type Option func(options *options) error`. Por exemplo, `WithPort` aceita um argumento `int`  que representa a porta e retorna um tipo `Option` que representa como atualizar a struct `options`.
 
 ![](img/options.png)
@@ -223,7 +223,7 @@ type Option func(options *options) error
 func WithPort(port int) Option {
   return func(options *options) error {
     if port < 0 {
-    return errors.New("port should be positive")
+    return errors.New("porta deve ser positiva")
   }
   options.port = &port
   return nil
@@ -239,8 +239,8 @@ func NewServer(addr string, opts ...Option) ( *http.Server, error) {
     }
   }
 
-  // At this stage, the options struct is built and contains the config
-  // Therefore, we can implement our logic related to port configuration
+  // Neste estágio, o struct de opções está construído e contém a configuração
+  // TPortanto, podemos implementar a lógica relacionada à configuração da porta
   var port int
   if options.port == nil {
     port = defaultHTTPPort
@@ -256,7 +256,7 @@ func NewServer(addr string, opts ...Option) ( *http.Server, error) {
 }
 ```
 
-O padrão de opções funcionais fornece uma maneira prática e amigável à API de lidar com opções. Embora o padrão do construtor possa ser uma opção válida, ele tem algumas desvantagens menores (ter que passar uma estrutura de configuração que pode estar vazia ou uma maneira menos prática de lidar com o gerenciamento de erros) que tendem a tornar o padrão de opções funcionais a maneira idiomática de lidar com esse tipo de problema no Go.
+O padrão de opções funcionais fornece uma maneira prática e amigável para a API de lidar com opções. Embora o pattern de construtor (builder) possa ser uma opção válida, ele apresenta algumas desvantagens menores (como ter que passar um struct de configuração que pode estar vazio ou uma maneira menos prática de gerenciar erros) que tendem a fazer o padrão de opções funcionais a abordagem idiomática de lidar com esses tipos de problemas em Go.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/11-functional-options/)
 
