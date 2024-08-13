@@ -5,11 +5,11 @@ comments: true
 
 # Erros comuns de Go
 
-Esta página é um resumo dos erros do [100 Go Mistakes and How to Avoid Them book](book.md). Enquanto isso, também está aberto à comunidade. Se você acredita que um erro comum do Go deve ser adicionado, crie uma [issue](https://github.com/teivah/100-go-mistakes/issues/new?assignees=&labels=community+mistake&template=community_mistake.md&title=).
+Esta página é um resumo dos erros contidos no livro [100 Go Mistakes and How to Avoid Them book](book.md). Ao mesmo tempo, também está aberta à comunidade. Se você acredita que um erro comum ao usar Go deve ser adicionado, crie uma [issue](https://github.com/teivah/100-go-mistakes/issues/new?assignees=&labels=community+mistake&template=community_mistake.md&title=).
 
 ???+ Tip "Jobs"
 
-    Sua empresa está contratando? [Patrocine](https://github.com/sponsors/teivah/sponsorships?sponsor=teivah&tier_id=386213&preview=true) este repositório e informe um público significativo de desenvolvedores Go (cerca de 1 mil visitantes únicos por semana) sobre suas oportunidades nesta seção.
+    Sua empresa está contratando? [Patrocine](https://github.com/sponsors/teivah/sponsorships?sponsor=teivah&tier_id=386213&preview=true) este repositório e informe um público significativo de desenvolvedores Go (~1 mil visitantes únicos por semana) sobre as oportunidades nesta seção.
 
 
 ![](img/inside-cover.png)
@@ -27,19 +27,19 @@ Esta página é um resumo dos erros do [100 Go Mistakes and How to Avoid Them bo
 
 ???+ info "TL;DR"
 
-    Evitar variáveis ​​sombreadas pode ajudar a evitar erros, como fazer referência à variável errada ou confundir os desenvolvedores.
+    Evitar variáveis ​​sombreadas pode ajudar a evitar erros, como referênciar a variável errada ou confundir os desenvolvedores.
 
-O sombreamento de variável ocorre quando um nome de variável é redeclarado em um bloco interno, mas essa prática está sujeita a erros. A imposição de uma regra para proibir variáveis ​​obscuras depende do gosto pessoal. Por exemplo, às vezes pode ser conveniente reutilizar um nome de variável existente, como `err` no caso de erros. Porém, em geral, devemos ser cautelosos porque agora sabemos que podemos enfrentar um cenário onde o código compila, mas a variável que recebe o valor não é a esperada.
+O sombreamento de variável ocorre quando um nome de variável é redeclarado em um bloco interno, mas essa prática está sujeita a erros. Impor uma regra para proibir variáveis sombreadsa depende do gosto pessoal. Por exemplo, às vezes pode ser conveniente reutilizar um nome de variável existente, como `err` para erros. No entanto, em geral, devemos ser cuidadosos porque podemos enfrentar um cenário onde o código compila, mas a variável que recebe o valor não é a esperada.
 
 [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/1-variable-shadowing/main.go)
 
-### Código aninhado desnecessário (#2)
+### Código aninhado sem necessidade (#2)
 
 ???+ info "TL;DR"
 
     Evitar níveis aninhados e manter o caminho feliz alinhado à esquerda facilita a construção de um modelo de código mental.
 
-Em geral, quanto mais níveis aninhados uma função exigir, mais complexa será sua leitura e compreensão. Vamos ver algumas aplicações diferentes desta regra para otimizar a legibilidade do nosso código:
+Em geral, quanto mais níveis aninhados uma função exigir, mais complexa será sua leitura e compreensão. Vejamos algumas aplicações diferentes desta regra para otimizar a legibilidade do nosso código:
 
 * Quando um bloco `if` retorna, devemos omitir o `else` em todos os casos. Por exemplo, não deveríamos escrever:
 
@@ -52,7 +52,7 @@ if foo() {
 }
 ```
 
-Em vez disso, omitimos o bloco `else` assim:
+Ao invés disso, omitimos o bloco `else`, assim:
 
 ```go
 if foo() {
@@ -62,7 +62,7 @@ if foo() {
 // ...
 ```
 
-* Também podemos seguir esta lógica com um caminho não feliz:
+* Também podemos seguir a mesma lógica com um caminho não feliz:
 
 ```go
 if s != "" {
@@ -85,21 +85,21 @@ Escrever código legível é um desafio importante para todo desenvolvedor. Esfo
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/2-nested-code/main.go)
 
-### Uso indevido de funções init (#3)
+### Uso incorreto de funções init (#3)
 
 ???+ info "TL;DR"
 
-    Ao inicializar variáveis, lembre-se de que as funções init têm tratamento de erros limitado e tornam o tratamento de estado e os testes mais complexos. Na maioria dos casos, as inicializações devem ser tratadas como funções específicas.
+    Ao inicializar variáveis, lembre-se de que as funções init têm capacidade limitada de tratamento de erros, e tornam o gerenciamento de estado e os testes mais complexos. Na maioria dos casos, as inicializações devem ser tratadas como funções específicas.
 
-Uma função init é uma função usada para inicializar o estado de um aplicativo. Não aceita argumentos e não retorna nenhum resultado (uma função `func()`). Quando um pacote é inicializado, todas as declarações de constantes e variáveis ​​do pacote são avaliadas. Então, as funções init são executadas.
+Uma função init é uma função usada para inicializar o estado de uma aplicação. Ela não recebe argumentos e não retorna nenhum resultado (uma função `func()`). Quando um pacote é inicializado, todas as declarações de constantes e variáveis ​​do pacote são avaliadas. Em seguida, as funções init são executadas.
 
-As funções de inicialização podem levar a alguns problemas:
+As funções init podem levar a alguns problemas:
 
 * Elas podem limitar o gerenciamento de erros.
-* Elas podem complicar a implementação de testes (por exemplo, uma dependência externa deve ser configurada, o que pode não ser necessário para o escopo dos testes unitários).
-* Se a inicialização exigir que definamos um estado, isso deverá ser feito por meio de variáveis ​​globais.
+* Podem complicar a implementação de testes (por exemplo, uma dependência externa deve ser configurada, o que pode não ser necessário para o escopo dos testes unitários).
+* Se a inicialização exigir a definição de um estado, isso deverá ser feito por meio de variáveis ​​globais.
 
-Devemos ser cautelosos com as funções init. No entanto, elas podem ser úteis em algumas situações, como na definição de configuração estática. Caso contrário, e na maioria dos casos, devemos tratar as inicializações através de funções ad hoc.
+Devemos ter cautela com as funções init. Elas podem ser úteis em algumas situações, como na definição de configurações estáticas. Caso contrário, e na maioria dos casos, devemos tratar as inicializações através de funções específicas (ad hoc).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/3-init-functions/)
 
@@ -107,59 +107,59 @@ Devemos ser cautelosos com as funções init. No entanto, elas podem ser úteis 
 
 ???+ info "TL;DR"
 
-    Forcing the use of getters and setters isn’t idiomatic in Go. Being pragmatic and finding the right balance between efficiency and blindly following certain idioms should be the way to go.
+    Forçar o uso de getter e setters não é idiomático em Go. Ser pragmático e encontrar o equilíbrio certo entre eficiência e a seguir cegamente certos idiomatismos deve ser o caminho a seguir.
 
-O encapsulamento de dados refere-se a ocultar os valores ou o estado de um objeto. Getters e setters são meios de habilitar o encapsulamento, fornecendo métodos exportados sobre campos de objetos não exportados.
+Encapsulamento de dados refere-se a esconder os valores ou o estado de um objeto. Getters e setters são meios para possibilitar o encapsulamento, fornecendo métodos exportados em cima de campos de objetos não exportados.
 
-No Go, não há suporte automático para getters e setters como vemos em algumas linguagens. Também não é considerado obrigatório nem idiomático o uso de getters e setters para acessar campos struct. Não devemos sobrecarregar nosso código com getters e setters em structs se eles não trouxerem nenhum valor. Deveríamos ser pragmáticos e nos esforçar para encontrar o equilíbrio certo entre eficiência e seguir expressões que às vezes são consideradas indiscutíveis em outros paradigmas de programação.
+Em Go, não há suporte automático para getters e setters, como vemos em algumas linguagens. Também não é considerado obrigatório nem idiomático o uso de getters e setters para acessar campos de structs. Não devemos sobrecarregar nosso código com getters e setters em structs se não agregarem valor. Devemos ser pragmáticos e buscar o equilíbrio certo entre eficiência e seguir idiomatismos que, às vezes, são considerados indiscutíveis em outros paradigmas de programação.
 
-Lembre-se de que Go é uma linguagem única projetada para muitas características, incluindo simplicidade. No entanto, se encontrarmos necessidade de getters e setters ou, como mencionado, prevermos uma necessidade futura e ao mesmo tempo garantirmos a compatibilidade futura, não há nada de errado em usá-los.
+Lembre-se de que Go é uma linguagem única, projetada para muitas características, incluindo a simplicidade. No entanto, se encontrarmos uma necessidade para utilizar getters e setters ou, como mencionado, previrmos uma necessidade futura, garantindo ao mesmo tempo a compatibilidade posterior, não há nada de errado em usá-los.
 
-### Interface poluidas (#5)
+### Poluição de interface (#5)
 
 ???+ info "TL;DR"
 
-    Abstrações devem ser descobertas, não criadas. Para evitar complexidade desnecessária, crie uma interface quando precisar dela e não quando você prevêr que será necessária, ou se puder pelo menos provar que a abstração é válida.
+    Abstrações devem ser descobertas, não criadas. Para evitar complexidade desnecessária, crie uma interface quando você realmente precisar dela e não apenas quando prever que poderá precisar, ou se pelo menos puder provar que a abstração é válida.
 
 Leia a seção completa [aqui](5-interface-pollution.md).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/5-interface-pollution/)
 
-### Interface do lado do producer (#6)
+### Interface no lado do producer (#6)
 
 ???+ info "TL;DR"
 
     Manter interfaces no lado do cliente evita abstrações desnecessárias.
 
-As interfaces são satisfeitas implicitamente em Go, o que tende a ser um divisor de águas em comparação com linguagens com implementação explícita. Na maioria dos casos, a abordagem a seguir é semelhante à que descrevemos na seção anterior: _as abstrações devem ser descobertas, não criadas_. Isso significa que não cabe ao producer forçar uma determinada abstração para todos os clientes. Em vez disso, cabe ao cliente decidir se precisa de alguma forma de abstração e então determinar o melhor nível de abstração para suas necessidades.
+Em Go, as interfaces são satisfeitas implicitamente, o que tende a ser uma mudança significativa em comparação com linguagens que possuem uma implementação explícita. Na maioria dos casos, o melhor é seguir a abordagem descrita na seção anterior: _abstrações devem ser descobertas, não criadas_. Isso significa que não cabe ao producer forçar uma abstração específica para todos os clientes. Em vez disso, é responsabilidade do cliente decidir se precisa de algum tipo de abstração e então determinar o melhor nível de abstração para suas necessidades.
 
-Uma interface deve residir no lado do consumidor na maioria dos casos. Contudo, em contextos específicos (por exemplo, quando sabemos – e não prevemos – que uma abstração será útil para os consumidores), podemos querer tê-la do lado do procuder. Se o fizermos, devemos nos esforçar para mantê-lo o mínimo possível, aumentando o seu potencial de reutilização e tornando-o mais facilmente combinável.
+Uma interface deve estar, na maioria dos casos, no lado do consumidor. Contudo, em contextos específicos (por exemplo, quando sabemos – e não apenas prevemos – que uma abstração será útil para os consumidores), podemos querer tê-la do lado do procuder. Se o fizermos, devemos nos esforçar para mantê-la o mais minimalista possível, aumentando seu potencial de reutilização e tornando-a mais facilmente combinável.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/6-interface-producer/)
 
-### Interfaces de retorno (#7)
+### Retornar interfaces  (#7)
 
 ???+ info "TL;DR"
 
     Para evitar restrições em termos de flexibilidade, uma função não deve retornar interfaces, mas implementações concretas na maioria dos casos. Por outro lado, uma função deve aceitar interfaces sempre que possível.
 
-Na maioria dos casos, não devemos retornar interfaces, mas implementações concretas. Caso contrário, isso pode tornar nosso design mais complexo devido às dependências do pacote e pode restringir a flexibilidade porque todos os clientes teriam que contar com a mesma abstração. Novamente, a conclusão é semelhante às seções anteriores: se sabemos (não prevemos) que uma abstração será útil para os clientes, podemos considerar o retorno de uma interface. Caso contrário, não deveríamos forçar abstrações; eles devem ser descobertas pelos clientes. Se um cliente precisar abstrair uma implementação por qualquer motivo, ele ainda poderá fazer isso do lado do cliente.
+Na maioria dos casos, não devemos retornar interfaces, e sim implementações concretas. Caso contrário, isso pode tornar o design mais complexo devido às dependências de pacote, e restringir a flexibilidade, pois todos os clientes teriam que depender da mesma abstração. Novamente, a conclusão é semelhante às seções anteriores: se soubermos (e não apenas previrmos) que uma abstração será útil para os clientes, podemos considerar retornar uma interface. Caso contrário, não deveríamos forçar abstrações; eles devem ser descobertas pelos clientes. Se um cliente precisar abstrair uma implementação por algum motivo, ele ainda pode fazer isso do lado do cliente.
 
 ### `any` não diz nada (#8)
 
 ???+ info "TL;DR"
 
-    Use apenas `any` se precisar aceitar ou retornar qualquer tipo possível, como `json.Marshal`. Caso contrário, `any` não fornece informações significativas e pode levar a problemas de tempo de compilação, permitindo que um chamador chame métodos com qualquer tipo de dados.
+    Use `any` apenas se precisar aceitar ou retornar qualquer tipo possível, como em `json.Marshal`. Caso contrário, `any` não fornece informações significativas e pode levar a problemas em tempo de compilação ao permitir que um chamador utilize métodos com qualquer tipo de dado.
 
-O tipo `any` pode ser útil se houver uma necessidade genuína de aceitar ou retornar qualquer tipo possível (por exemplo, quando se trata de empacotamento ou formatação). Em geral, devemos evitar a todo custo generalizar demais o código que escrevemos. Talvez um pouco de código duplicado possa ocasionalmente ser melhor se melhorar outros aspectos, como a expressividade do código.
+O tipo `any` pode ser útil se houver uma necessidade genuína de aceitar ou retornar qualquer tipo possível (por exemplo, ao lidar com marshaling ou formatação). Em geral, devemos evitar a generalização excessiva do código que escrevemos a todo custo. Talvez um pouco de código duplicado ocasionalmente possa ser melhor se isso melhorar outros aspectos, como a expressividade do código.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/8-any/main.go)
 
-### Ficar confuso sobre quando usar genéricos (#9)
+### Confusão sobre quando usar generics (#9)
 
 ???+ info "TL;DR"
 
-    Depender de parâmetros genéricos e de tipo pode impedir a gravação de código clichê (boilerplate) para fatorar elementos ou comportamentos. No entanto, não use parâmetros de tipo prematuramente, mas somente quando você perceber uma necessidade concreta deles. Caso contrário, introduzem abstrações e complexidade desnecessárias.
+    Depender de generics e de parâmetros de tipo pode impedir a escrita de códigos repetitivos para fatorar elementos ou comportamentos. No entanto, não use parâmetros de tipo prematuramente, mas apenas quando você identificar uma necessidade concreta para eles. Caso contrário, eles introduzem abstrações e complexidade desnecessárias.
 
 Leia a seção completa [aqui](9-generics.md).
 
@@ -169,15 +169,15 @@ Leia a seção completa [aqui](9-generics.md).
 
 ???+ info "TL;DR"
 
-    Usar a incorporação de tipo (type embedding) também pode ajudar a evitar código clichê (boilerplate); no entanto, certifique-se de que isso não leve a problemas de visibilidade onde alguns campos deveriam ter permanecido ocultos.
+    Usar a incorporação de tipo (type embedding) pode ajudar a evitar código repetitivo (boilerplate); no entanto, certifique-se de que isso não leve a problemas de visibilidade onde alguns campos deveriam permanecer ocultos.
 
-Ao criar uma struct, Go oferece a opção de incorporar tipos. Mas isso às vezes pode levar a comportamentos inesperados se não compreendermos todas as implicações da incorporação de tipos. Ao longo desta seção, veremos como incorporar tipos, o que eles trazem e os possíveis problemas.
+Ao criar um struct, Go oferece a opção de incorporar tipos. No entanto, isso pode levar a comportamentos inesperados se não compreendermos todas as implicações da incorporação de tipos. Nesta seção, examinamos como incorporar tipos, o que isso traz e os possíveis problemas.
 
-No Go, um campo struct é chamado de incorporado se for declarado sem nome. Por exemplo,
+Em Go, um campo de struct é chamado de incorporado (embedded) se for declarado sem um nome. Por exemplo,
 
 ```go
 type Foo struct {
-    Bar // Embedded field
+    Bar // Campo incorporado
 }
 
 type Bar struct {
@@ -185,18 +185,18 @@ type Bar struct {
 }
 ```
 
-Na estrutura `Foo`, o tipo `Bar` é declarado sem nome associado; portanto, é um campo incorporado.
+No struct `Foo`, o tipo `Bar` é declarado sem um nome associado; portanto, é um campo incorporado.
 
-Usamos incorporação para promover os campos e métodos de um tipo incorporado. Como `Bar` contém um campo `Baz`, esse campo é promovido para `Foo`. Portanto, `Baz` fica disponível a partir de `Foo`.
+Usamos A incorporação para promover os campos e métodos de um tipo incorporado. Como `Bar` contém um campo `Baz`, esse campo é promovido para `Foo`. Portanto, `Baz` fica disponível a partir de `Foo`.
 
-O que podemos dizer sobre a incorporação de tipos? Primeiro, observemos que raramente é uma necessidade e significa que, qualquer que seja o caso de uso, provavelmente também poderemos resolvê-lo sem incorporação de tipo. A incorporação de tipos é usada principalmente por conveniência: na maioria dos casos, para promover comportamentos.
+O que podemos dizer sobre a incorporação de tipos? Primeiro, devemos notar que raramente é uma necessidade, e isso significa que, seja qual for o caso de uso, provavelmente podemos resolvê-lo sem incorporação de tipos. A incorporação de tipos é usada principalmente por conveniência: na maioria dos casos, para promover comportamentos.
 
 Se decidirmos usar incorporação de tipo, precisamos ter em mente duas restrições principais:
 
-* Não deve ser usado apenas como um açúcar sintático para simplificar o acesso a um campo (como `Foo.Baz()` em vez de `Foo.Bar.Baz()`). Se esta for a única justificativa, não vamos incorporar o tipo interno e usar um campo.
-* Não deve promover dados (campos) ou um comportamento (métodos) que queremos ocultar do exterior: por exemplo, se permitir que os clientes acessem um comportamento de bloqueio que deve permanecer privado da struct.
+* Não deve ser usada apenas como um açúcar sintático para simplificar o acesso a um campo (como `Foo.Baz()` em vez de `Foo.Bar.Baz()`). Se esta for a única justificativa, não devemos incorporar o tipo interno e usar um campo em vez disso.
+* Não deve promover dados (campos) ou um comportamento (métodos) que queremos ocultar do exterior: por exemplo, se permitir que clientes acessem um comportamento de bloqueio que deve permanecer privado ao struct.
 
-Usar a incorporação de tipo de forma consciente, mantendo essas restrições em mente, pode ajudar a evitar código clichê (boilerplate) com métodos de encaminhamento adicionais. No entanto, vamos garantir que não o fazemos apenas por motivos cosméticos e não promovemos elementos que deveriam permanecer ocultos.
+Usar a incorporação de tipos conscientemente, mantendo essas restrições em mente, pode ajudar a evitar código repetitivo com métodos de encaminhamento adicionais. No entanto, devemos garantir que não o fazemos apenas por motivos estéticos e que não promovemos elementos que devem permanecer ocultos.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/10-type-embedding/main.go)
 
@@ -2361,7 +2361,7 @@ Credits: [@jeromedoucet](https://github.com/jeromedoucet)
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/12-optimizations/91-cpu-caches/cache-line/)
 
-* Slice de estruturas vs. estrutura de slices
+* Slice de structs vs. struct de slices
 
 <!-- TODO -->
 
@@ -2377,21 +2377,21 @@ Credits: [@jeromedoucet](https://github.com/jeromedoucet)
 
   Para evitar um avanço crítico e, portanto, utilizar apenas uma pequena parte do cache, esteja ciente de que os caches são particionados.
 
-### Escrevendo código simultâneo que leva a compartilhamento falso (#92)
+### Escrever código concorrente que leva a falso compartilhamento (#92)
 
 ???+ info "TL;DR"
 
-    Saber que níveis mais baixos de caches de CPU não são compartilhados entre todos os núcleos ajuda a evitar padrões que degradam o desempenho, como compartilhamento falso ao escrever código de simultaneidade. Compartilhar memória é uma ilusão.
+    Saber que os níveis mais baixos dos caches de CPU não são compartilhados entre todos os núcleos ajuda a evitar padrões que degradam o desempenho, como o compartilhamento falso, ao escrever código concorrente. O compartilhamento de memória é uma ilusão.
 
 Leia a seção completa [aqui](92-false-sharing.md).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/12-optimizations/92-false-sharing/)
 
-### Não levando em consideração o paralelismo no nível de instrução (#93)
+### Não levar em conta o paralelismo em nível de instrução (#93)
 
 ???+ info "TL;DR"
 
-    Use o ILP para otimizar partes específicas do seu código para permitir que uma CPU execute tantas instruções paralelas quanto possível. Identificar perigos nos dados é uma das etapas principais.
+    Use o paralelismo em nível de instrução (Instruction Level Parallelism - ILP) para otimizar partes específicas do seu código, permitindo que a CPU execute o maior número possível de instruções em paralelo. Identificar riscos (hazards) de dados é um dos principais passos.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/12-optimizations/93-instruction-level-parallelism/)
 
@@ -2399,15 +2399,15 @@ Leia a seção completa [aqui](92-false-sharing.md).
 
 ???+ info "TL;DR"
 
-    Você pode evitar erros comuns lembrando que no Go os tipos básicos são alinhados com seu próprio tamanho. Por exemplo, tenha em mente que reorganizar os campos de uma estrutura por tamanho em ordem decrescente pode levar a estruturas mais compactas (menos alocação de memória e potencialmente uma melhor localidade espacial).
+    Você pode evitar erros comuns lembrando que, em Go, os tipos básicos são alinhados com seu próprio tamanho. Por exemplo, tenha em mente que reorganizar os campos de uma struct por tamanho em ordem decrescente pode levar a structs mais compactas (menos alocação de memória e potencialmente uma melhor localidade espacial).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/12-optimizations/94-data-alignment/)
 
-### Não entendendo stack vs. heap (#95)
+### Não entender stack vs. heap (#95)
 
 ???+ info "TL;DR"
 
-    Compreender as diferenças fundamentais entre heap e pilha também deve fazer parte do seu conhecimento básico ao otimizar um aplicativo Go. As alocações de pilha são quase gratuitas, enquanto as alocações de heap são mais lentas e dependem do GC para limpar a memória.
+    Compreender as diferenças fundamentais entre heap e stack também deve fazer parte do seu conhecimento básico ao otimizar uma aplicação Go. As alocações de stack são quase gratuitas, enquanto as alocações de heap são mais lentas e dependem do GC para limpar a memória.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/12-optimizations/95-stack-heap/)
 
@@ -2415,21 +2415,21 @@ Leia a seção completa [aqui](92-false-sharing.md).
 
 ???+ info "TL;DR"
 
-    A redução das alocações também é um aspecto essencial da otimização de um aplicativo Go. Isso pode ser feito de diferentes maneiras, como projetar a API cuidadosamente para evitar compartilhamento, compreender as otimizações comuns do compilador Go e usar `sync.Pool`.
+    Reduzir alocações também é um aspecto essencial da otimização de uma aplicação Go. Isso pode ser feito de diversas maneiras, como projetar a API cuidadosamente para evitar compartilhamento excessivo, entender as otimizações comuns do compilador Go e usar `sync.Pool`.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/12-optimizations/96-reduce-allocations/)
 
-### Não dependendo do inlining (#97)
+### Não utilizar inlining (#97)
 
 ???+ info "TL;DR"
 
-    Use a técnica de inlining de caminho rápido para reduzir com eficiência o tempo amortizado para chamar uma função.
+    Use a técnica de fast-track inlining para reduzir de forma eficiente o tempo amortizado para chamar uma função.
 
 ### Não usar ferramentas de diagnóstico Go (#98)
 
 ???+ info "TL;DR"
 
-    Confie na criação de perfil e no rastreador de execução para entender o desempenho de um aplicativo e as partes a serem otimizadas.
+    Confiar no perfilamento (profiling) e no rastreador de execução (execution tracer) para entender como uma aplicação se comporta e quais partes precisam ser otimizadas.
 
 Leia a seção completa [aqui](98-profiling-execution-tracing.md).
 
@@ -2437,7 +2437,7 @@ Leia a seção completa [aqui](98-profiling-execution-tracing.md).
 
 ???+ info "TL;DR"
 
-    Compreender como ajustar o GC pode levar a vários benefícios, como lidar com aumentos repentinos de carga com mais eficiência.
+    Compreender como otimizar o Garbage Collector (GC) pode levar a múltiplos benefícios, como lidar de maneira mais eficiente com aumentos súbitos de carga.
 
 ### Não entendendo os impactos da execução do Go no Docker e Kubernetes (#100)
 
@@ -2445,7 +2445,7 @@ Leia a seção completa [aqui](98-profiling-execution-tracing.md).
 
     Para ajudar a evitar a limitação da CPU quando implantado no Docker e no Kubernetes, lembre-se de que Go não reconhece CFS.
 
-By default, GOMAXPROCS is set to the number of OS-apparent logical CPU cores.
+Por padrão, GOMAXPROCS é configurado para o número de núcleos lógicos de CPU aparente no sistema operacional.
 
 When running some Go code inside Docker and Kubernetes, we must know that Go isn't CFS-aware ([github.com/golang/go/issues/33803](https://github.com/golang/go/issues/33803)). Therefore, GOMAXPROCS isn't automatically set to the value of `spec.containers.resources.limits.cpu` (see [Kubernetes Resource Management for Pods and Containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)); instead, it's set to the number of logical cores on the host machine. The main implication is that it can lead to an increased tail latency in some specific situations.
 
