@@ -209,7 +209,7 @@ Usar a incorporação de tipos conscientemente, mantendo essas restrições em m
 Embora existam diferentes implementações com pequenas variações, a ideia principal é a seguinte:
 
 * Um struct não exportado armazena a configuração: opções.
-* Cada opção é uma função que retorna o mesmo tipo: `type Option func(options *options) error`. Por exemplo, `WithPort` aceita um argumento `int`  que representa a porta e retorna um tipo `Option` que representa como atualizar a struct `options`.
+* Cada opção é uma função que retorna o mesmo tipo: `type Option func(options *options) error`. Por exemplo, `WithPort` aceita um argumento `int`  que representa a porta e retorna um tipo `Option` que representa como atualizar o struct `options`.
 
 ![](img/options.png)
 
@@ -240,7 +240,7 @@ func NewServer(addr string, opts ...Option) ( *http.Server, error) {
   }
 
   // Neste estágio, o struct de opções está construído e contém a configuração
-  // TPortanto, podemos implementar a lógica relacionada à configuração da porta
+  // Portanto, podemos implementar a lógica relacionada à configuração da porta
   var port int
   if options.port == nil {
     port = defaultHTTPPort
@@ -256,25 +256,26 @@ func NewServer(addr string, opts ...Option) ( *http.Server, error) {
 }
 ```
 
-O padrão de opções funcionais fornece uma maneira prática e amigável para a API de lidar com opções. Embora o pattern de construtor (builder) possa ser uma opção válida, ele apresenta algumas desvantagens menores (como ter que passar um struct de configuração que pode estar vazio ou uma maneira menos prática de gerenciar erros) que tendem a fazer o padrão de opções funcionais a abordagem idiomática de lidar com esses tipos de problemas em Go.
+O padrão de opções funcionais fornece uma maneira prática e amigável para a API lidar com opções. Embora o pattern de construtor (builder) possa ser uma opção válida, ele apresenta algumas desvantagens menores (como ter que passar um struct de configuração que pode estar vazio ou uma maneira menos prática de gerenciar erros) que tendem a fazer do padrão de opções funcionais a abordagem mais idiomática para lidar com esses tipos de problemas em Go.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/11-functional-options/)
 
-### Desorganização do projeto (estrutura do projeto e organização do pacote) (#12)
+### Desorganização do projeto (estrutura do projeto e organização dos pacotes) (#12)
 
-No que diz respeito à organização geral, existem diferentes escolas de pensamento. Por exemplo, devemos organizar a nossa aplicação por contexto ou por camada? Depende de nossas preferências. Podemos preferir agrupar o código por contexto (como o contexto do cliente, o contexto do contrato, etc.), ou podemos preferir seguir os princípios da arquitetura hexagonal e agrupar por camada técnica. Se a decisão que tomarmos se adequar ao nosso caso de uso, não pode ser uma decisão errada, desde que permaneçamos consistentes com ela.
+Em relação à organização geral, existem diferentes escolas de pensamento. Por exemplo, devemos organizar a nossa aplicação por contexto ou por camada? Isso depende de nossas preferências. Podemos preferir agrupar o código por contexto (como o contexto do cliente, o contexto do contrato, etc.), ou podemos preferir seguir os princípios da arquitetura hexagonal e agrupar por camada técnica. Se a decisão que tomarmos se adequar ao nosso caso de uso, ela não pode ser uma decisão errada, desde que permaneçamos consistentes com ela.
 
-Em relação aos pacotes, existem várias práticas recomendadas que devemos seguir. Primeiro, devemos evitar pacotes prematuros porque podem complicar demais um projeto. Às vezes, é melhor usar uma organização simples e fazer nosso projeto evoluir quando entendemos o que ele contém, em vez de nos forçarmos a fazer a estrutura perfeita desde o início. A granularidade é outra coisa essencial a considerar. Devemos evitar dezenas de pacotes nano contendo apenas um ou dois arquivos. Se o fizermos, é porque provavelmente perdemos algumas conexões lógicas entre esses pacotes, tornando nosso projeto mais difícil de ser compreendido pelos leitores. Por outro lado, também devemos evitar pacotes grandes que diluem o significado do nome de um pacote.
+Em relação aos pacotes, há várias práticas recomendadas que devemos seguir. Primeiro, devemos evitar a criação prematura de pacotes, porque isso pode complicar desnecessariamente  um projeto. Às vezes, é melhor usar uma organização simples e deixar nosso projeto evoluir à medida que entendemos o que ele contém, em vez de nos forçarmos a criar a estrutura perfeita desde o início.
+A granularidade é outro aspecto essencial a considerar. Devemos evitar ter dezenas de pacotes minúsculos contendo apenas um ou dois arquivos. Se isso acontecer, é provável que tenhamos perdido algumas conexões lógicas entre esses pacotes, tornando nosso projeto mais difícil de ser compreendido pelos leitores. Por outro lado, também devemos evitar pacotes grandes que diluem o significado do nome do pacote.
 
-A nomenclatura dos pacotes também deve ser considerada com cuidado. Como todos sabemos (como desenvolvedores), nomear é difícil. Para ajudar os clientes a entender um projeto Go, devemos nomear nossos pacotes de acordo com o que eles fornecem, não com o que contêm. Além disso, a nomenclatura deve ser significativa. Portanto, o nome de um pacote deve ser curto, conciso, expressivo e, por convenção, uma única palavra minúscula.
+A nomeação dos pacotes também deve ser cuidadosamente considerada. Como todos sabemos (como desenvolvedores), nomear é difícil. Para ajudar os clientes a entender um projeto em Go, devemos nomear nossos pacotes de acordo com o que eles fornecem, não com o que eles contêm. Além disso, o nome deve ser significativo. Portanto, o nome de um pacote deve ser curto, conciso, expressivo e, por convenção, uma única palavra em minúsculas.
 
-Quanto ao que exportar, a regra é bastante simples. Devemos minimizar o que deve ser exportado tanto quanto possível para reduzir o acoplamento entre pacotes e manter ocultos os elementos exportados desnecessários. Se não tivermos certeza se devemos ou não exportar um elemento, devemos optar por não exportá-lo. Mais tarde, se descobrirmos que precisamos exportá-lo, poderemos ajustar nosso código. Vamos também ter em mente algumas exceções, como fazer com que os campos sejam exportados para que uma estrutura possa ser desempacotada com encoding/json.
+Em relação ao que exportar, a regra é bastante simples. Devemos minimizar ao máximo o que deve ser exportado para reduzir o acoplamento entre pacotes e manter os elementos desnecessários ocultos. Se não tivermos certeza se devemos exportar um elemento, devemos optar por não exportá-lo. Mais tarde, se descobrirmos que precisamos exportá-lo, poderemos ajustar nosso código. Também devemos ter em mente algumas exceções, como tornar campos exportáveis para que uma struct possa ser desserializada com encoding/json.
 
-Organizar um projeto não é simples, mas seguir essas regras deve ajudar a facilitar sua manutenção. No entanto, lembre-se de que a consistência também é vital para facilitar a manutenção. Portanto, vamos nos certificar de manter as coisas o mais consistentes possível dentro de uma base de código.
+Organizar um projeto não é uma tarefa simples, mas seguir essas regras deve ajudar a torná-lo mais fácil de manter. No entanto, lembre-se de que a consistência também é vital para facilitar a manutenção. Portanto, vamos garantir que mantemos as coisas o mais consistente possível dentro de uma base de código.
 
 ???+ note
 
-    Em 2023, a equipe Go publicou uma diretriz oficial para organizar/estruturar um projeto Go: [go.dev/doc/modules/layout](https://go.dev/doc/modules/layout)
+    Em 2023, a equipe do Go publicou uma diretriz oficial para organizar/estruturar um projeto em Go: [go.dev/doc/modules/layout](https://go.dev/doc/modules/layout)
 
 ### Criando pacotes de utilitários (#13)
 
