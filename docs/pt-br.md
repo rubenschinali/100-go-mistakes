@@ -281,9 +281,9 @@ Organizar um projeto não é uma tarefa simples, mas seguir essas regras deve aj
 
 ???+ info "TL;DR"
 
-    A nomenclatura é uma parte crítica do design do aplicativo. Criar pacotes como `common`, `util` e `shared` não traz muito valor para o leitor. Refatore esses pacotes em nomes de pacotes significativos e específicos.
+    Nomear é uma parte crítica do design de aplicações. Criar pacotes como `common`, `util` e `shared` não agrega muito valor para o leitor. Refatore esses pacotes para nomes de pacotes significativos e específicos.
 
-Além disso, tenha em mente que nomear um pacote com base no que ele fornece e não no que ele contém pode ser uma forma eficiente de aumentar sua expressividade.
+Além disso, lembre-se de que nomear um pacote com base no que ele fornece, e não no que ele contém, pode ser uma maneira eficiente de aumentar sua expressividade.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/02-code-project-organization/13-utility-packages/stringset.go)
 
@@ -291,54 +291,54 @@ Além disso, tenha em mente que nomear um pacote com base no que ele fornece e n
 
 ???+ info "TL;DR"
 
-    Para evitar colisões de nomes entre variáveis ​​e pacotes, levando a confusão ou talvez até bugs, use nomes exclusivos para cada um. Se isso não for viável, use um alias de importação para alterar o qualificador para diferenciar o nome do pacote do nome da variável ou pense em um nome melhor.
+    Para evitar colisões de nomes entre variáveis ​​e pacotes, que podem levar a confusão ou até mesmo a bugs, use nomes únicos para cada um. Se isso não for viável, use um alias de importação para alterar o qualificador e diferenciar o nome do pacote do nome da variável, ou pense em um nome melhor.
 
-As colisões de pacotes ocorrem quando um nome de variável colide com um nome de pacote existente, impedindo que o pacote seja reutilizado. Devemos evitar colisões de nomes de variáveis ​​para evitar ambiguidade. Se enfrentarmos uma colisão, devemos encontrar outro nome significativo ou usar um alias de importação.
+Colisões de pacotes ocorrem quando um nome de variável colide com um nome de pacote existente, impedindo o reuso do pacote. Devemos evitar colisões de nomes de variáveis ​​para evitar ambiguidades. Se enfrentarmos uma colisão, devemos encontrar outro nome significativo ou usar um alias de importação.
 
-### Documentação de código ausente (#15)
+### Falta de documentação do código (#15)
 
 ???+ info "TL;DR"
 
-    Para ajudar clientes e mantenedores a entender a finalidade do seu código, documente os elementos exportados.
+    Para ajudar clientes e mantenedores a entender o propósito do seu código, documente os elementos exportados.
 
-A documentação é um aspecto importante da programação. Simplifica como os clientes podem consumir uma API, mas também pode ajudar na manutenção de um projeto. No Go, devemos seguir algumas regras para tornar nosso código idiomático:
+A documentação é um aspecto importante da programação. Simplifica como os clientes podem consumir uma API, e também pode ajudar na manutenção de um projeto. Em Go, devemos seguir algumas regras para tornar nosso código idiomático:
 
-Primeiro, cada elemento exportado deve ser documentado. Seja uma estrutura, uma interface, uma função ou qualquer outra coisa, se for exportado deve ser documentado. A convenção é adicionar comentários, começando com o nome do elemento exportado.
+Primeiro, todo elemento exportado deve ser documentado. Seja uma struct, uma interface, uma função ou outra coisa, se for exportado, deve ser documentado. A convenção é adicionar comentários começando com o nome do elemento exportado.
 
-Por convenção, cada comentário deve ser uma frase completa que termina com pontuação. Tenha também em mente que quando documentamos uma função (ou um método), devemos destacar o que a função pretende fazer, não como o faz; isso pertence ao núcleo de uma função e comentários, não à documentação. Além disso, o ideal é que a documentação forneça informações suficientes para que o consumidor não precise olhar nosso código para entender como usar um elemento exportado.
+Como convenção, cada comentário deve ser uma frase completa que termina com pontuação. Também lembre-se de que, ao documentar uma função (ou método), devemos destacar o que a função pretende fazer, não como ela faz; isso pertence ao núcleo da função e aos comentários, não à documentação. Além disso, a documentação deve fornecer informações suficientes para que o usuário não precise olhar nosso código para entender como usar um elemento exportado.
 
-Quando se trata de documentar uma variável ou constante, podemos estar interessados ​​em transmitir dois aspectos: sua finalidade e seu conteúdo. O primeiro deve funcionar como documentação de código para ser útil para clientes externos. Este último, porém, não deveria ser necessariamente público.
+Quando se trata de documentar uma variável ou uma constante, pode ser interessante transmitir dois aspectos: seu propósito e seu conteúdo. O primeiro deve ser registrado como documentação de código para ser útil aos clientes externos. O segundo, no entanto, não precisa necessariamente ser público.
 
-Para ajudar clientes e mantenedores a entender o escopo de um pacote, devemos também documentar cada pacote. A convenção é iniciar o comentário com `// Package` seguido do nome do pacote. A primeira linha de um comentário de pacote deve ser concisa. Isso porque ele aparecerá no pacote. Então, podemos fornecer todas as informações que precisamos nas linhas seguintes.
+Para ajudar os clientes e os mantenedores a entender o escopo de um pacote, também devemos documentar cada pacote. A convenção é começar o comentário com `// Package` seguido pelo nome do pacote. A primeira linha de um comentário de pacote deve ser concisa, pois ela aparecerá no pacote. Depois, podemos fornecer todas as informações necessárias nas linhas seguintes.
 
-Documentar nosso código não deve ser uma restrição. Devemos aproveitar a oportunidade para garantir que isso ajude os clientes e mantenedores a entender o propósito do nosso código.
+Documentar nosso código não deve ser uma limitação. Devemos aproveitar a oportunidade para garantir que ele ajude os clientes e mantenedores a entender o propósito do nosso código.
 
-### Não usando linters (#16)
+### Não usar linters (#16)
 
 ???+ info "TL;DR"
 
     Para melhorar a qualidade e consistência do código, use linters e formatadores.
 
-Um linter é uma ferramenta automática para analisar código e detectar erros. O escopo desta seção não é fornecer uma lista exaustiva dos linters existentes; caso contrário, ele ficará obsoleto rapidamente. Mas devemos entender e lembrar por que os linters são essenciais para a maioria dos projetos Go.
+Um linter é uma ferramenta automática para analisar código e detectar erros. O escopo desta seção não é fornecer uma lista exaustiva dos linters existentes, pois isso se tornaria obsoleto rapidamente. No entanto, devemos entender e lembrar por que os linters são essenciais para a maioria dos projetos em Go.
 
-No entanto, se você não é um usuário regular de linters, aqui está uma lista que você pode usar diariamente:
+Se você não é um usuário regular de linters, aqui está uma lista que pode ser usada diariamente:
 
-* [https://golang.org/cmd/vet](https://golang.org/cmd/vet)—A standard Go analyzer
-* [https://github.com/kisielk/errcheck](https://github.com/kisielk/errcheck)—An error checker
-* [https://github.com/fzipp/gocyclo](https://github.com/fzipp/gocyclo)—A cyclomatic complexity analyzer
-* [https://github.com/jgautheron/goconst](https://github.com/jgautheron/goconst)—A repeated string constants analyzer
-
-
-Além dos linters, também devemos usar formatadores de código para corrigir o estilo do código. Aqui está uma lista de alguns formatadores de código para você experimentar:
-
-* [https://golang.org/cmd/gofmt](https://golang.org/cmd/gofmt)—A standard Go code formatter
-* [https://godoc.org/golang.org/x/tools/cmd/goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)—A standard Go imports formatter
+* [https://golang.org/cmd/vet](https://golang.org/cmd/vet)—Um analisador padrão de Go
+* [https://github.com/kisielk/errcheck](https://github.com/kisielk/errcheck)—Um verificador de erros
+* [https://github.com/fzipp/gocyclo](https://github.com/fzipp/gocyclo)—Um analisador de complexidade ciclomática
+* [https://github.com/jgautheron/goconst](https://github.com/jgautheron/goconst)—Um analisador de constantes de strings repetidas
 
 
-Enquanto isso, devemos também dar uma olhada em golangci-lint ([https://github.com/golangci/golangci-lint](https://github.com/golangci/golangci-lint)).
-É uma ferramenta de linting que fornece uma fachada sobre muitos linters e formatadores úteis. Além disso, permite executar os linters em paralelo para melhorar a velocidade de análise, o que é bastante útil.
+Além disso, também devemos usar formatadores de código para corrigir o estilo do código. Aqui está uma lista de alguns formatadores de código para você experimentar:
 
-Linters e formatadores são uma forma poderosa de melhorar a qualidade e consistência de nossa base de código. Vamos dedicar um tempo para entender qual deles devemos usar e garantir que automatizamos sua execução (como um precommit hook de CI ou Git).
+* [https://golang.org/cmd/gofmt](https://golang.org/cmd/gofmt)—Um formatador de código padrão do Go
+* [https://godoc.org/golang.org/x/tools/cmd/goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)—Um formatador de imports padrão do Go
+
+
+Além disso, devemos também dar uma olhada em golangci-lint ([https://github.com/golangci/golangci-lint](https://github.com/golangci/golangci-lint)).
+É uma ferramenta de linting que fornece uma fachada sobre vários linters e formatadores úteis. Ela também permite executar os linters em paralelo para melhorar a velocidade de análise, o que é bastante útil.
+
+Linters e formatadores são uma forma poderosa de melhorar a qualidade e consistência de nossa base de código. Vamos dedicar um tempo para entender qual deles devemos usar e garantir que automatizamos sua execução (como um hook de CI ou pré-commit no Git).
 
 ## Tipos de dados
 
@@ -346,17 +346,17 @@ Linters e formatadores são uma forma poderosa de melhorar a qualidade e consist
 
 ???+ info "TL;DR"
 
-    Ao ler o código existente, lembre-se de que literais inteiros começando com `0` são números octais. Além disso, para melhorar a legibilidade, torne os inteiros octais explícitos prefixando-os com `0o`.
+    Ao ler código existente, tenha em mente que literais inteiros começando com `0` são números octais. Além disso, para melhorar a legibilidade, torne os inteiros octais explícitos prefixando-os com `0o`.
 
-Os números octais começam com 0 (por exemplo, `010` é igual a 8 na base 10). Para melhorar a legibilidade e evitar possíveis erros para futuros leitores de código, devemos tornar os números octais explícitos usando o prefixo `0o` (por exemplo, `0o10`).
+Números octais começam com 0 (por exemplo, `010` é igual a 8 em base 10). Para melhorar a legibilidade e evitar possíveis erros para futuros leitores de código, devemos tornar os números octais explícitos usando o prefixo `0o` (por exemplo, `0o10`).
 
-Devemos também observar as outras representações literais inteiras:
+Também devemos observar as outras representações literais inteiras:
 
-* _Binário_—Usa um prefixo `0b` ou `0B`(por exemplo, `0b100` é igual a 4 na base 10)
-* _Hexadecimal_—Usa um prefixo `0x` ou `0X` (por exemplo, `0xF` é igual a 15 na base 10)
-* _Imaginário_—Usa um `i` sufixo (por exemplo, `3i`)
+* _Binário_—Usa-se um prefixo `0b` ou `0B`(por exemplo, `0b100` é igual a 4 em base 10)
+* _Hexadecimal_—Usa-se um prefixo `0x` ou `0X` (por exemplo, `0xF` é igual a 15 em base 10)
+* _Imaginário_—Usa-se um `i` sufixo (por exemplo, `3i`)
 
-Também podemos usar um caractere de sublinhado (_) como separador para facilitar a leitura. Por exemplo, podemos escrever 1 bilhão desta forma: `1_000_000_000`. Também podemos usar o caractere sublinhado com outras representações (por exemplo, `0b00_00_01`).
+Podemos também usar um caractere sublinhado (_) como separador para melhorar a legibilidade. Por exemplo, podemos escrever 1 bilhão desta forma: `1_000_000_000`. Também podemos usar o caractere sublinhado com outras representações (por exemplo, `0b00_00_01`).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/17-octal-literals/main.go)
 
