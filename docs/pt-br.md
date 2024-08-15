@@ -360,13 +360,13 @@ Podemos também usar um caractere sublinhado (_) como separador para melhorar a 
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/17-octal-literals/main.go)
 
-### Negligenciando estouros de número inteiro (#18)
+### Negligenciando overflow de inteiros (#18)
 
 ???+ info "TL;DR"
 
-    Como os overflows e underflows de números inteiros são tratados silenciosamente no Go, você pode implementar suas próprias funções para capturá-los.
+    Como os overflows e underflows de números inteiros são tratados de forma silenciosa em Go, você pode implementar suas próprias funções para detectá-los.
 
-No Go, um estouro de número inteiro que pode ser detectado em tempo de compilação gera um erro de compilação. Por exemplo,
+En Go, um overflow de inteiro que pode ser detectado em tempo de compilação gera um erro de compilação. Por exemplo,
 
 ```go
 var counter int32 = math.MaxInt32 + 1
@@ -376,15 +376,15 @@ var counter int32 = math.MaxInt32 + 1
 constant 2147483648 overflows int32
 ```
 
-No entanto, em tempo de execução, um overflow ou underflow de inteiro é silencioso; isso não leva ao pânico do aplicativo. É essencial ter esse comportamento em mente, pois ele pode levar a bugs sorrateiros (por exemplo, um incremento de número inteiro ou adição de números inteiros positivos que leva a um resultado negativo).
+No entanto, em tempo de execução, um overflow ou underflow de inteiro ocorre de forma silenciosa; isso não resulta em um panic na aplicação. É essencial manter esse comportamento em mente, pois ele pode levar a bugs difíceis de identificar (por exemplo, um incremento de inteiro ou soma de inteiros positivos que resulta em um valor negativo).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/18-integer-overflows)
 
-### Não entendendo os pontos flutuantes (#19)
+### Não entendendo pontos flutuantes (#19)
 
 ???+ info "TL;DR"
 
-    Fazer comparações de ponto flutuante dentro de um determinado delta pode garantir que seu código seja portátil. Ao realizar adição ou subtração, agrupe as operações com ordem de grandeza semelhante para favorecer a precisão. Além disso, execute multiplicação e divisão antes da adição e subtração.
+    Fazer comparações de números de ponto flutuante dentro de um delta específico pode garantir que seu código seja portátil. Ao realizar adições ou subtrações, agrupe as operações com uma ordem de grandeza semelhante para favorecer a precisão. Além disso, execute multiplicações e divisões antes de adições e subtrações.
 
 Em Go, existem dois tipos de ponto flutuante (se omitirmos os números imaginários): float32 e float64. O conceito de ponto flutuante foi inventado para resolver o principal problema dos números inteiros: sua incapacidade de representar valores fracionários. Para evitar surpresas desagradáveis, precisamos saber que a aritmética de ponto flutuante é uma aproximação da aritmética real.
 
@@ -397,49 +397,49 @@ fmt.Println(n * n)
 
 Podemos esperar que este código imprima o resultado de 1.0001 * 1.0001 = 1,00020001, certo? No entanto, executá-lo na maioria dos processadores x86 imprime 1.0002.
 
-Como os tipos `float32` e `float64` em Go são aproximações, temos que ter algumas regras em mente:
+Como os tipos `float32` e `float64` de Go são aproximações, precisamos ter em mente algumas regras:
 
 * Ao comparar dois números de ponto flutuante, verifique se a diferença está dentro de um intervalo aceitável.
-* Ao realizar adições ou subtrações, agrupe operações com ordem de magnitude semelhante para melhor precisão.
-* Para favorecer a precisão, se uma sequência de operações exigir adição, subtração, multiplicação ou divisão, execute primeiro as operações de multiplicação e divisão.
+* Ao realizar adições ou subtrações, agrupe operações com ordem de magnitude semelhante para melhorar a precisão.
+* Para favorecer a precisão, se uma sequência de operações exigir adição, subtração, multiplicação ou divisão, execute as operações de multiplicação e divisão primeiro.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/19-floating-points/main.go)
 
-### Não entendendo o comprimento e a capacidade de slice (#20)
+### Não entender o comprimento e a capacidade de slices (#20)
 
 ???+ info "TL;DR"
 
-    Compreender a diferença entre comprimento e capacidade da slice deve fazer parte do conhecimento básico de um desenvolvedor Go. O comprimento de slice é o número de elementos disponíveis na slice, enquanto a capacidade de slice é o número de elementos na matriz de apoio.
+    Entender a diferença entre comprimento e a capacidade de slices deve fazer parte do conhecimento básico de um desenvolvedor Go. O comprimento de slice é o número de elementos disponíveis no slice, enquanto a capacidade do slice é o número de elementos no array subjacente.
 
 Leia a seção completa [aqui](20-slice.md).
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/20-slice-length-cap/main.go)
 
-### Inicialização de slice ineficiente (#21)
+### Inicialização ineficiente de slices (#21)
 
 ???+ info "TL;DR"
 
-    Ao criar uma fatia, inicialize-a com um determinado comprimento ou capacidade se o seu comprimento já for conhecido. Isso reduz o número de alocações e melhora o desempenho.
+    Ao criar um slice, inicialize-o com um comprimento ou capacidade definidos se o comprimento já for conhecido. Isso reduz o número de alocações e melhora o desempenho.
 
-Ao inicializar uma fatia usando `make`, podemos fornecer um comprimento e uma capacidade opcional. Esquecer de passar um valor apropriado para ambos os parâmetros quando faz sentido é um erro generalizado. Na verdade, isso pode levar a múltiplas cópias e esforço adicional para o GC limpar as matrizes de apoio temporárias. Em termos de desempenho, não há uma boa razão para não ajudar o tempo de execução do Go.
+Ao inicializar um slice usando `make`, podemos fornecer um comprimento e uma capacidade opcional. Esquecer de passar um valor apropriado para ambos os parâmetros, quando faz sentido, é um erro comum. Isso pode levar a várias cópias e a um esforço adicional para o GC (Garbage Collector) limpar os arrays temporários subjacentes. Do ponto de vista do desempenho, não há uma boa razão para não dar uma ajuda ao runtime do Go.
 
-Nossas opções são alocar uma fatia com determinada capacidade ou comprimento. Destas duas soluções, vimos que a segunda tende a ser um pouco mais rápida. Mas usar uma determinada capacidade e anexar pode ser mais fácil de implementar e ler em alguns contextos.
+Nossas opções são alocar um slice com uma capacidade ou comprimento definidos. Dessas duas soluções, vimos que a segunda tende a ser ligeiramente mais rápida. No entanto, usar uma capacidade definida e o `append` pode ser mais fácil de implementar e entender em alguns contextos.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/21-slice-init/main.go)
 
-### Estar confuso sobre slice nula vs. slice vazia (#22)
+### Confundir slice nil e slice vazia (#22)
 
 ???+ info "TL;DR"
 
-    To prevent common confusions such as when using the `encoding/json` or the `reflect` package, you need to understand the difference between nil and empty slices. Both are zero-length, zero-capacity slices, but only a nil slice doesn’t require allocation.
+    Para evitar confusões comuns, como ao usar os pacotes `encoding/json` ou `reflect`, é importante entender a diferença entre slices nil e slices vazios. Ambos são slices de comprimento e capacidade zero, mas apenas um slice nil não requer alocação. 
 
-No Go, há uma distinção entre slices nulas e vazias. Uma slice nula é igual a `nil`, enquanto uma slice vazia tem comprimento zero. Uma slice nula está vazia, mas uma slice vazia não é necessariamente `nil`. Enquanto isso, uma slice nula não requer nenhuma alocação. Vimos ao longo desta seção como inicializar uma slice dependendo do contexto usando
+No Go, há uma distinção entre slices nil e slices vazios. Um slice nil é igual a `nil`, enquanto um slice vazio tem comprimento zero. Um slice nil é vazio, mas uma slice vazio não é necessariamente `nil`. Além disso, um slice nil não requer nenhuma alocação. Ao longo desta seção, vimos como inicializar um slice dependendo do contexto, usando:
 
-* `var s []string` se não tivermos certeza sobre o comprimento final e a fatia pode estar vazia
-* `[]string(nil)` como açúcar sintático para criar uma fatia nula e vazia
+* `var s []string` se não tivermos certeza sobre o comprimento final e o slice puder estar vazio
+* `[]string(nil)` como uma sintaxe simplificada para criar um slice nil e vazio
 * `make([]string, length)` se o comprimento futuro for conhecido
 
-A última opção, `[]string{}` deve ser evitada se inicializarmos a fatia sem elementos. Finalmente, vamos verificar se as bibliotecas que usamos fazem distinções entre fatias nulas e vazias para evitar comportamentos inesperados.
+A última opção, `[]string{}` deve ser evitada se estivermos inicializando o slice sem elementos. Por fim, vamos verificar se as bibliotecas que usamos fazem distinções entre slices nil e vazios para evitar comportamentos inesperados.
 
  [:simple-github: Código fonte](https://github.com/teivah/100-go-mistakes/tree/master/src/03-data-types/22-nil-empty-slice/)
 
